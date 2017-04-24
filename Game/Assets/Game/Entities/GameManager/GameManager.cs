@@ -8,7 +8,8 @@ public class GameManager : MonoBehaviour
 
     private Team _lastTeamToDropBall = Team.None;
 
-    public float MaxDropSpeed = 10.0f;
+    public float MinDropSpeed = 0.5f;
+    public float MaxDropSpeed = 5.0f;
     public Ball Ball;
     public Collider2D RedGoalTrigger;
     public Collider2D BlueGoalTrigger;
@@ -17,6 +18,8 @@ public class GameManager : MonoBehaviour
     public Transform CenterTransform;
     public ScoreIndicator RedScoreIndicator;
     public ScoreIndicator BlueScoreIndicator;
+    public Rod[] RedRods;
+    public Rod[] BlueRods;
 
     private Team TeamWithBallInGoal
     {
@@ -45,7 +48,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForFixedUpdate();
         RedScoreIndicator.Score = 0;
         BlueScoreIndicator.Score = 0;
-        StartCoroutine(DropBall(Team.Red));
+        StartCoroutine(ServeBall(Team.Red));
         StartCoroutine(StuckBallMonitor());
     }
 
@@ -57,7 +60,7 @@ public class GameManager : MonoBehaviour
             yield return new WaitForSeconds(3);
             if (Ball.RigidBody2D.velocity.magnitude <= 0.1f)
             {
-                StartCoroutine(DropBall(_lastTeamToDropBall));
+                StartCoroutine(ServeBall(_lastTeamToDropBall));
             }
         }
     }
@@ -70,11 +73,11 @@ public class GameManager : MonoBehaviour
             {
                 case Team.Red:
                     ++RedScoreIndicator.Score;
-                    StartCoroutine(DropBall(Team.Blue));
+                    StartCoroutine(ServeBall(Team.Blue));
                     break;
                 case Team.Blue:
                     ++BlueScoreIndicator.Score;
-                    StartCoroutine(DropBall(Team.Red));
+                    StartCoroutine(ServeBall(Team.Red));
                     break;
                 case Team.None:
                     break;
@@ -89,19 +92,19 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private IEnumerator DropBall(Team droppingTeam)
+    private IEnumerator ServeBall(Team servingTeam)
     {
-        if (droppingTeam == Team.None) yield return null;
+        if (servingTeam == Team.None) yield return null;
 
-        _lastTeamToDropBall = droppingTeam;
+        _lastTeamToDropBall = servingTeam;
 
-        Ball.transform.position = droppingTeam == Team.Red ? RedBallDropTransform.position : BlueBallDropTransform.position;
+        Ball.transform.position = servingTeam == Team.Red ? RedBallDropTransform.position : BlueBallDropTransform.position;
         Ball.RigidBody2D.simulated = false;
         yield return new WaitForSeconds(1.25f);
         Ball.RigidBody2D.simulated = true;
 
-        var dropTargetPosition = CenterTransform.position + new Vector3(Random.value * 2.0f - 1.0f, Random.value * 2.0f - 1.0f) * 0.25f;
-        var dropVelocity = (Ball.transform.position - dropTargetPosition).normalized * (3 + Random.value * (MaxDropSpeed - 3));
+        var dropTargetPosition = CenterTransform.position + new Vector3(Random.value * 2.0f - 1.0f, Random.value * 2.0f - 1.0f) * 0.05f;
+        var dropVelocity = (Ball.transform.position - dropTargetPosition).normalized * (MinDropSpeed + Random.value * (MaxDropSpeed - MinDropSpeed));
         Ball.RigidBody2D.velocity = dropVelocity;
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
-    private float _movementForce = 100;
+    private float _movementForce = 50;
     public Rigidbody2D RigidBody2D;
 
 	private void Start()

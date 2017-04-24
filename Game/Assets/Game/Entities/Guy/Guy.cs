@@ -6,6 +6,7 @@ using UnityEngine;
 public class Guy : MonoBehaviour
 {
     private SpriteRenderer _spriteRenderer;
+    private Rod _rod;
 
     public Sprite[] Sprites;
     public float[] SpriteRotations;
@@ -25,19 +26,24 @@ public class Guy : MonoBehaviour
 	private void Start()
 	{
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        _rod = GetComponentInParent<Rod>();
         for (var i = 0; i < Sprites.Length; ++i)
         {
             SpriteRotationMapping.Add(Sprites[i], SpriteRotations[i]);
         }
     }
-	
-	private void Update()
-	{
-		
-	}
 
     private Sprite GetSpriteForRotation(float rotation)
     {
         return SpriteRotationMapping.OrderBy(sr => Mathf.Abs(sr.Value - rotation)).First().Key;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Ball"))
+        {
+            var ball = collision.gameObject.GetComponent<Ball>();
+            ball.RigidBody2D.AddForce(new Vector2(_rod.Torque, _rod.Rigidbody2D.velocity.y * Time.deltaTime), ForceMode2D.Impulse);
+        }
     }
 }

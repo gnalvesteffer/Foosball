@@ -83,6 +83,7 @@
     <Compile Include="Assets\Game\Entities\Goal\Goal.cs" />
     <Compile Include="Assets\Game\Entities\Guy\Guy.cs" />
     <Compile Include="Assets\Game\Entities\Rod\Rod.cs" />
+    <Compile Include="Assets\Game\Entities\Rod\RodController.cs" />
     <Compile Include="Assets\Game\Entities\Score\ScoreIndicator.cs" />
     <Compile Include="Assets\PixelPerfectCamera\Scripts\CanvasScreenSpaceScaler.cs" />
     <Compile Include="Assets\PixelPerfectCamera\Scripts\CanvasWorldScaler.cs" />
