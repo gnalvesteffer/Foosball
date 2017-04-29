@@ -1,2 +1,2 @@
 # Foosball
-2D Foosball Game
+2D Foosball Game made with Unity.
