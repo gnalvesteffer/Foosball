@@ -6,11 +6,15 @@ using UnityEngine;
 public class Guy : MonoBehaviour
 {
     private SpriteRenderer _spriteRenderer;
+    private BoxCollider2D _boxCollider2D;
     private Rod _rod;
+    private float _maxRotation;
 
     public Sprite[] Sprites;
     public float[] SpriteRotations;
     public Dictionary<Sprite, float> SpriteRotationMapping = new Dictionary<Sprite, float>();
+    public float BallHitRotationMin = -45.0f;
+    public float BallHitRotationMax = 45.0f;
 
     private float _rotation;
     public float Rotation
@@ -20,13 +24,25 @@ public class Guy : MonoBehaviour
         {
             _rotation = value;
             _spriteRenderer.sprite = GetSpriteForRotation(_rotation);
+            _boxCollider2D.offset = new Vector2(_spriteRenderer.sprite.bounds.extents.x * Rotation / _maxRotation, _boxCollider2D.offset.y);
+            _boxCollider2D.enabled = DisplayRotation >= BallHitRotationMin && _rotation <= BallHitRotationMax;
+        }
+    }
+
+    private float DisplayRotation
+    {
+        get
+        {
+            return SpriteRotations.OrderBy(sr => Mathf.Abs(sr - Rotation)).First();
         }
     }
 
 	private void Start()
 	{
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        _boxCollider2D = GetComponent<BoxCollider2D>();
         _rod = GetComponentInParent<Rod>();
+        _maxRotation = SpriteRotations.Max();
         for (var i = 0; i < Sprites.Length; ++i)
         {
             SpriteRotationMapping.Add(Sprites[i], SpriteRotations[i]);

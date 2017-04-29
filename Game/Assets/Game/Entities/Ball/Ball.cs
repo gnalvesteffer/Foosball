@@ -14,6 +14,7 @@ public class Ball : MonoBehaviour
 	
 	private void Update()
 	{
+        return;
         if (Input.GetKey(KeyCode.W))
         {
             RigidBody2D.AddForce(new Vector2(0, _movementForce) * Time.deltaTime);

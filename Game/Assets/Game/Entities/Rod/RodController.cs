@@ -8,6 +8,7 @@ public class RodController : MonoBehaviour
 
     public bool IsControlled;
     public float MovementSpeed = 2.0f;
+    public KeyCode PlayerControlKey;
 
 	private void Start()
 	{
@@ -19,7 +20,7 @@ public class RodController : MonoBehaviour
     {
         while (true)
         {
-            if (Input.GetMouseButton(0))
+            if (Input.GetMouseButton(0) && Input.GetKey(PlayerControlKey))
             {
                 var startMousePosition = Input.mousePosition;
                 yield return new WaitForEndOfFrame();
